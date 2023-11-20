@@ -35,6 +35,7 @@ package LCA is
      and (not (Cle_Presente (Sda, Cle)'Old) or Taille (Sda) = Taille (Sda)'Old)
      and (Cle_Presente (Sda, Cle)'Old or Taille (Sda) = Taille (Sda)'Old + 1);
 
+
    -- Supprimer la valeur associée Ã  une Clé dans une Sda.
    -- Exception : Cle_Absente_Exception si ClÃ© n'est pas utilisée dans la Sda
    procedure Supprimer (Sda : in out T_LCA ; Cle : in T_Cle) with

@@ -1,6 +1,6 @@
 % Compte-rendu minimal du mini-projet SDA : LCA et TH
-% Auteur : NOM Prénom
-% Groupe de TP : ...
+% Auteur : HAGROUF Abdellatif
+% Groupe de TP : K
 
 
 **Consigne :** Vous devez écrire vos réponse à la place des ... en laissant
@@ -21,7 +21,12 @@ pandoc --toc -N -o LISEZ-MOI.pdf LISEZ-MOI.txt
 **Indiquer les inconvénients/avantages d'une implantation par listes chaînées
 d'une SDA.**
 
-...
+#Les avantages:
+	La flexibilité et la dynamicité de l'utilisation de la mémoire.
+#Inconvénients:
+	Les erreurs de désallocation de mémorire possibles.
+	La création implicite d'un ordre dans le parcours des élements.
+		
 
 
 

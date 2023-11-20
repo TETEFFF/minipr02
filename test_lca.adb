@@ -92,7 +92,7 @@ procedure Test_LCA is
 			Enregistrer (Annuaire, Cles (I), Donnees (I));
 
 			if Bavard then
-				Put_Line ("AprÃ¨s insertion de la clÃ© " & Cles (I));
+				Put_Line ("Après insertion de la clé " & Cles (I));
 				Afficher (Annuaire);
 				Afficher_Interne (Annuaire); New_Line;
 				New_Line;
@@ -272,6 +272,7 @@ procedure Test_LCA is
 	procedure Tester_La_Valeur_Erreur is
 		Annuaire : T_LCA;
 		Inutile: Integer;
+      pragma Unreferenced (Inutile);
 	begin
 		begin
 			Put_Line ("=== Tester_La_Valeur_Erreur..."); New_Line;

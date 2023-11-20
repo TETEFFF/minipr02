@@ -12,8 +12,8 @@ procedure lca_sujet is
       Put(Ent,1);
    end Afficher_Entier;
 
-	package lca_str_int is
-		new lca (T_Cle => Unbounded_String,T_Valeur => Integer);
+   package lca_str_int is
+     new lca (T_Cle => Unbounded_String,T_Valeur => Integer);
    use lca_str_int;
 
    procedure Afficher_Liste is new Afficher_Debug(Put, Afficher_Entier);
@@ -21,9 +21,18 @@ procedure lca_sujet is
    LCA : T_LCA;
 begin
    Initialiser(LCA);
+   if Est_Vide(LCA) then
+      put("liste vide");
+   end if;
    Enregistrer(LCA, To_Unbounded_String("un"), 1);
    Enregistrer(LCA, To_Unbounded_String("deux"), 2);
+   Enregistrer(LCA, To_Unbounded_String("troix"),3);
    Afficher_Liste(LCA);
+   Supprimer(LCA,To_Unbounded_String("un"));
+   Afficher_Liste(LCA);
+   Enregistrer(LCA,To_Unbounded_String("deux"),4);
+   Afficher_Liste(LCA);
+   Detruire(LCA);
 
 
 end lca_sujet;

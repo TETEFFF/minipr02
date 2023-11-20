@@ -25,15 +25,15 @@ package body LCA is
       Curseur : T_LCA;
    begin
       Curseur := Sda;
-      while Curseur/= null and then Curseur.all.Suivant /= null loop
+      New_Line;
+      while Curseur/= null loop
          Put("-->[ ");
          Afficher_Cle(Curseur.all.Cle);
          Put(" : ");
-         Afficher_Valeur(Curseur.all.Valeur);
-         Put("]")
-           Curseur := Curseur.all.Suivant;
+         Afficher_Donnee(Curseur.all.Valeur);
+         Put("]");
+         Curseur := Curseur.all.Suivant;
       end loop;
-      Curseur := null;
       Put("--E");
    end Afficher_Debug;
 
@@ -57,32 +57,22 @@ package body LCA is
             taille:= taille +1;
             Curseur := Curseur.all.Suivant;
          end loop;
-      end if
-      return taille;
+         return taille;
+      end if;
+
    end Taille;
 
 
    procedure Enregistrer (Sda : in out T_LCA ; Cle : in T_Cle ; Valeur : in T_Valeur) is
-      Curseur : T_LCA;
-      CleTrouvé: Boolean;
    begin
       if Est_Vide(Sda) then
-         Curseur := new T_Cellule'(Cle,Valeur,null);
-      else
-         CleTrouvé := False;
-         while !CleTrouvé and Curseur.all.Suivant /= null loop
-            if Curseur.all.Cle = Cle then
-               CleTrouvé := True;
-            end if;
-            Curseur := Curseur.all.Suivant;
-         end loop;
+         Sda := new T_Cellule'(Cle,Valeur,null);
+      else if Sda.Cle = Cle then
+            Sda.Valeur := Valeur;
+         else
+            Enregistrer(Sda.Suivant,Cle,Valeur);
+         end if;
       end if;
-
-
-      Curseur := new T_Cellule'(Cle,Valeur,Sda);
-      Sda := Curseur;
-      Curseur := null;
-
    end Enregistrer;
 
 
@@ -93,7 +83,7 @@ package body LCA is
          return False;
       else
          Curseur := Sda;
-         while Curseur.all.Suivant /= null loop
+         while Curseur /= null loop
             if Curseur.all.Cle = Cle then
                return True;
             else
@@ -102,28 +92,75 @@ package body LCA is
          end loop;
          return False;
 
-      end;
+      end if;
+   end Cle_Presente;
 
 
-      function La_Valeur (Sda : in T_LCA ; Cle : in T_Cle) return T_Valeur is
+   function La_Valeur (Sda : in T_LCA ; Cle : in T_Cle) return T_Valeur is
+      Curseur : T_LCA;
+   begin
 
-         Curseur : T_LCA;
-      begin
-         if Est_Vide(Sda) then
-            raise
-      end La_Valeur;
+      if Est_Vide(Sda) then
+         raise Cle_Absente_Exception;
+      else
+         Curseur := Sda;
+         while Curseur.Suivant /= null and Curseur.Cle /= Cle loop
+            Curseur := Curseur.Suivant;
+         end loop;
+         if Curseur.Cle = Cle then
+            return Curseur.Valeur;
+         else
+            raise Cle_Absente_Exception;
+         end if;
+      end if;
+   end La_Valeur;
 
 
-      procedure Supprimer (Sda : in out T_LCA ; Cle : in T_Cle) is
-      begin
-         null;	-- TODO : Ã  changer
-      end Supprimer;
+
+   procedure Supprimer (Sda : in out T_LCA ; Cle : in T_Cle) is
+      Curseur : T_LCA;
+      CurseurApres : T_LCA;
+   begin
+
+      if Est_Vide(Sda) then
+         raise Cle_Absente_Exception;
+      else
+         Curseur := Sda;
+         CurseurApres := Sda;
+         If Sda.Cle = Cle then
+            Sda := Sda.Suivant;
+         else if CurseurApres.Suivant /= null then
+               CurseurApres := CurseurApres.Suivant;
+            end if;
+         end if;
+         while CurseurApres.Suivant /= null and CurseurApres.Cle /= Cle loop
+            Curseur := Curseur.Suivant;
+            CurseurApres := CurseurApres.Suivant;
+         end loop;
+         if CurseurApres.Cle = Cle and CurseurApres.Suivant = null then
+            Curseur.Suivant := null;
+         else if CurseurApres.Cle = Cle and CurseurApres.Suivant /= null then
+               Curseur.Suivant := CurseurApres.Suivant;
+         else
+               raise Cle_Absente_Exception ;
+
+            end if;
+         end if;
+      end if;
+   end Supprimer;
 
 
-      procedure Pour_Chaque (Sda : in T_LCA) is
-      begin
-         null;	-- TODO : Ã  changer
-      end Pour_Chaque;
+   procedure Pour_Chaque (Sda : in T_LCA) is
+      Curseur: T_LCA;
+   begin
+      Curseur := Sda;
+      while Curseur /=null loop
+         Traiter(Curseur.Cle, Curseur.Valeur);
+         Curseur := Curseur.Suivant;
+      end loop;
+
+   end Pour_Chaque;
+
+end LCA;
 
 
-   end LCA;
