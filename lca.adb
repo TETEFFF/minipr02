@@ -48,7 +48,7 @@ package body LCA is
       taille : Integer;
       Curseur : T_LCA;
    begin
-      if Est_Vide(Sda) then
+      if Sda = null then
          return 0;
       else
          taille := 1;
@@ -65,7 +65,7 @@ package body LCA is
 
    procedure Enregistrer (Sda : in out T_LCA ; Cle : in T_Cle ; Valeur : in T_Valeur) is
    begin
-      if Est_Vide(Sda) then
+      if Sda = null then
          Sda := new T_Cellule'(Cle,Valeur,null);
       else if Sda.Cle = Cle then
             Sda.Valeur := Valeur;
@@ -79,9 +79,7 @@ package body LCA is
    function Cle_Presente (Sda : in T_LCA ; Cle : in T_Cle) return Boolean is
       Curseur : T_LCA;
    begin
-      if Est_Vide(Sda) then
-         return False;
-      else
+
          Curseur := Sda;
          while Curseur /= null loop
             if Curseur.all.Cle = Cle then
@@ -92,7 +90,6 @@ package body LCA is
          end loop;
          return False;
 
-      end if;
    end Cle_Presente;
 
 
@@ -100,7 +97,7 @@ package body LCA is
       Curseur : T_LCA;
    begin
 
-      if Est_Vide(Sda) then
+      if Sda = null then
          raise Cle_Absente_Exception;
       else
          Curseur := Sda;
@@ -122,7 +119,7 @@ package body LCA is
       CurseurApres : T_LCA;
    begin
 
-      if Est_Vide(Sda) then
+      if Sda = null then
          raise Cle_Absente_Exception;
       else
          Curseur := Sda;
@@ -141,7 +138,7 @@ package body LCA is
             Curseur.Suivant := null;
          else if CurseurApres.Cle = Cle and CurseurApres.Suivant /= null then
                Curseur.Suivant := CurseurApres.Suivant;
-         else
+            else
                raise Cle_Absente_Exception ;
 
             end if;
@@ -155,7 +152,12 @@ package body LCA is
    begin
       Curseur := Sda;
       while Curseur /=null loop
-         Traiter(Curseur.Cle, Curseur.Valeur);
+         begin
+            Traiter(Curseur.Cle, Curseur.Valeur);
+         exception
+            when others =>
+               Put_Line("Traitement échoué pour cet élement");
+         end;
          Curseur := Curseur.Suivant;
       end loop;
 

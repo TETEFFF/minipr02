@@ -1,0 +1,24 @@
+
+* Voir le retour général
+* Voir le retour automatique
+
+* LISEZ-MOI.txt non complété.
+
+* Il faut utiliser valgrind !
+
+* Afficher_Debug :
+    - Attention à l'indentation
+
+* Taille :
+    - Ne pas utiliser `Est_Vide (Sda)` mais `Sda = null`.
+    - Pourquoi traier spécifiquement `Est_Vide (Sda)` ?
+
+* Enregistrer :
+    - Pourquoi `!` ?
+    - Algorithme à revoir.
+
+* Cle_Presente :
+    - Pourquoi traier spécifiquement `Est_Vide (Sda)` ?
+    - Pas de `return` dans une boucle.
+
+* L'implantation n'est pas terminée.

@@ -3,6 +3,7 @@ with Ada.Integer_Text_IO;  use Ada.Integer_Text_IO;
 with Ada.Command_Line;     use Ada.Command_Line;
 with SDA_Exceptions;       use SDA_Exceptions;
 with Alea;
+with LCA;
 
 -- Évaluer la qualité du générateur aléatoire et les LCA.
 procedure Evaluer_Alea_LCA is
@@ -14,8 +15,8 @@ procedure Evaluer_Alea_LCA is
 		New_Line;
 		Put_Line ("Usage : " & Command_Name & " Borne Taille");
 		New_Line;
-		Put_Line ("   Borne  : les nombres sont tirés dans l'intervalle 1..Borne");
-		Put_Line ("   Taille : la taille de l'échantillon");
+		Put_Line ("   Borne  : les nombres sont tires dans l'intervalle 1..Borne");
+		Put_Line ("   Taille : la taille de l'echantillon");
 		New_Line;
 	end Afficher_Usage;
 
@@ -66,13 +67,52 @@ procedure Evaluer_Alea_LCA is
 		Post => 0 <= Min and Min <= Taille
 			and 0 <= Max and Max <= Taille
 			and (if Min /= Max then Min + Max <= Taille)
-	is
+   is
+
+
+      random : Integer;
+      frMin : Integer;
+      frMax : Integer;
+
+      procedure Comparer_avec_iteration_prec( Cle: in Integer; Valeur : in Integer )is
+         pragma Unreferenced (Cle);
+         begin
+            if Valeur > frMax then
+               frMax := Valeur;
+            else if Valeur < frMin then
+                  frMin := Valeur;
+               end if;
+            end if;
+         end Comparer_avec_iteration_prec;
+
+
 		package Mon_Alea is
 			new Alea (1, Borne);
-		use Mon_Alea;
+      use Mon_Alea;
 
-	begin
-		null;	-- TODO à remplacer !
+      package lca_ent_ent is
+        new LCA(T_Cle => Integer, T_Valeur => Integer);
+      use lca_ent_ent;
+
+      procedure Pour_Chaque_CleVal is new Pour_Chaque( Comparer_avec_iteration_prec );
+
+            LCA : T_LCA;
+   begin
+      Initialiser(LCA);
+      for i in 1..Taille loop
+         begin
+         Get_Random_Number(random);
+         Enregistrer(LCA, random, La_Valeur(LCA, random)+1);
+         exception
+            when Cle_Absente_Exception =>
+               Enregistrer(LCA, random, 1);
+         end;
+      end loop;
+      frMin := Taille;
+      frMax := 0 ;
+      Pour_Chaque_CleVal(LCA);
+      Max := frMax;
+      Min := frMin;
 	end Calculer_Statistiques;
 
 
@@ -82,20 +122,28 @@ procedure Evaluer_Alea_LCA is
 	Taille: integer;   -- nombre de tirages aléatoires
 begin
 	if Argument_Count /= 2 then
-		Afficher_Usage;
-	else
-		-- Récupérer les arguments de la ligne de commande
-		Borne := Integer'Value (Argument (1));
-		Taille := Integer'Value (Argument (2));
+      Put_Line("   Arguments insuffisants !");
+      Afficher_Usage;
+   else
+      begin
+         -- R�cup�rer les arguments de la ligne de commande
+         Borne := Integer'Value (Argument (1));
+         Taille := Integer'Value (Argument (2));
 
-		-- Afficher les valeur de Borne et Taille
-		Afficher_Variable ("Borne ", Borne);
-		Afficher_Variable ("Taille", Taille);
+         -- Afficher les valeur de Borne et Taille
+         Afficher_Variable ("Borne ", Borne);
+         Afficher_Variable ("Taille", Taille);
 
-		Calculer_Statistiques (Borne, Taille, Min, Max);
+         Calculer_Statistiques (Borne, Taille, Min, Max);
 
-		-- Afficher les fréquence Min et Max
-		Afficher_Variable ("Min", Min);
-		Afficher_Variable ("Max", Max);
-	end if;
+         -- Afficher les fréquence Min et Max
+         Afficher_Variable ("Min", Min);
+         Afficher_Variable ("Max", Max);
+      exception
+         when Constraint_Error =>
+            New_Line;
+            Put_Line("   Mauvaises entrees!");
+            Afficher_Usage;
+      end ;
+   end if;
 end Evaluer_Alea_LCA;
